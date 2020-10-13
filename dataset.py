@@ -22,7 +22,6 @@ class EntityDataset:
                 s,
                 add_special_tokens=False
             )
-            # abhishek: ab ##hi ##sh ##ek
             input_len = len(inputs)
             ids.extend(inputs)
             target_tag.extend([tags[i]] * input_len)
