@@ -2,7 +2,7 @@ import transformers
 import os
 
 dirname = os.path.dirname(__file__)
-training_file_path = os.path.join(dirname, 'input.csv')
+training_file_path = os.path.join(dirname, 'input/input.csv')
 
 MAX_LEN = 128
 TRAIN_BATCH_SIZE = 32
