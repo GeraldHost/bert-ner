@@ -14,24 +14,19 @@ class EntityDataset:
         text = self.texts[item]
         tags = self.tags[item]
 
-        ids = []
-        target_tag =[]
-
-        for i, s in enumerate(text):
+        def tokenize(i, inp):
+            s, t = inp
             inputs = config.TOKENIZER.encode(
                 s,
                 add_special_tokens=False
             )
             input_len = len(inputs)
-            ids.extend(inputs)
-            target_tag.extend([tags[i]] * input_len)
+            return (inputs, [t] * input_len)
 
-        ids = ids[:config.MAX_LEN - 2]
-        target_tag = target_tag[:config.MAX_LEN - 2]
+        ids, target_tag = list(zip(*map(tokenize, zip(text, tags))))
 
-        ids = [101] + ids + [102]
-        target_tag = [3] + target_tag + [3]
-
+        ids = [101] + ids[:config.MAX_LEN - 2] + [102]
+        target_tag = [3] + target_tag[:config.MAX_LEN - 2] + [3]
         mask = [1] * len(ids)
         token_type_ids = [0] * len(ids)
 
