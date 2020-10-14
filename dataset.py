@@ -1,6 +1,6 @@
 import config
 import torch
-
+from functools import reduce
 
 class EntityDataset:
     def __init__(self, texts, tags):
@@ -14,16 +14,13 @@ class EntityDataset:
         text = self.texts[item]
         tags = self.tags[item]
 
-        def tokenize(i, inp):
+        def tokenize(acc, inp):
             s, t = inp
-            inputs = config.TOKENIZER.encode(
-                s,
-                add_special_tokens=False
-            )
+            inputs = config.TOKENIZER.encode(s, add_special_tokens=False)
             input_len = len(inputs)
-            return (inputs, [t] * input_len)
+            return (acc[0] + inputs, acc[1] + [t] * input_len)
 
-        ids, target_tag = list(zip(*map(tokenize, zip(text, tags))))
+        ids, target_tag = reduce(tokenize, zip(text, tags), [[], []])
 
         ids = [101] + ids[:config.MAX_LEN - 2] + [102]
         target_tag = [3] + target_tag[:config.MAX_LEN - 2] + [3]
