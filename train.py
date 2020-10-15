@@ -23,7 +23,7 @@ def process_data(data_path):
     enc_str = np.append(df.tag.unique(), "B-START")
     enc_ids = enc_tag.fit_transform(enc_str)
     def str_to_id(s):
-        index = np.where(enc_str == s)
+        index = np.where(enc_str == s)[0][0]
         return enc_ids[index]
         
     df["tag"] = df["tag"].apply(str_to_id)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         valid_dataset, batch_size=config.VALID_BATCH_SIZE, num_workers=1
     )
 
-    device = torch.device("cpu")
+    device = torch.device("cuda")
     model = EntityModel(num_tag=num_tag)
     model.to(device)
 
